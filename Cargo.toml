@@ -7,6 +7,8 @@ license = "Apache-2.0 OR MIT"
 readme = "README.md"
 edition = "2024"
 categories = ["data-structures"]
+homepage = "https://github.com/448-OG/random-detached"
+repository = "https://github.com/448-OG/random-detached.git"
 
 [features]
 default = ["random_bytes"]
