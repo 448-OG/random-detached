@@ -1,6 +1,6 @@
 [package]
 name = "random-detached"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["448-OG <superuser@448.africa>"]
 description = "A random byte and char generator that doesn't keep breaking because different crates use different versions of rand"
 license = "Apache-2.0 OR MIT"
@@ -16,7 +16,7 @@ default = ["random_bytes"]
 random_bytes = []
 chars = ["dep:rand_chacha"]
 
-blake3_hash = ["blake3"]
+blake3_hash = ["dep:blake3"]
 const_cmp = ["dep:subtle"]
 
 [dependencies]
