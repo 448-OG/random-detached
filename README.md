@@ -1,6 +1,6 @@
 # RANDOM-DETACHED
 
-A random byte and char generator that dosen't keep breaking because different project use different verfsions of Rand.
+A random byte and char generator that doesn't keep breaking because different project use different verfsions of Rand.
 
 The generation of random bytes is fast enough and fills the destination array in one syscall.
 

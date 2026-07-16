@@ -2,31 +2,78 @@ name: Rust
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 env:
   CARGO_TERM_COLOR: always
+  RUSTC_WRAPPER: sccache
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
+  ubuntu:
+    name: Ubuntu Checks
+    runs-on: ubuntu-26.04
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
-    - name: cargo test no default features
-      run: cargo test --no-default-features --verbose  
-    - name: cargo test chars features but no default features
-      run: cargo test --no-default-features --features chars      
-    - name: cargo test chars features
-      run: cargo test --features chars
-
-    - name: cargo-deny
-      uses: EmbarkStudios/cargo-deny-action@v2.0.20
+      - uses: actions/checkout@v4
       
+      - name: Spell check
+        uses: crate-ci/typos@master
+        with:
+          write_changes: false
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.10
+
+      - run: |
+          echo "RUSTC_WRAPPER=$RUSTC_WRAPPER"
+          which sccache || true
+
+      - name: Check formatting
+        run: cargo fmt --all -- --config format_code_in_doc_comments=true --check
+
+      - name: Install cargo-deny
+        run: cargo install cargo-deny
+      - name: Run cargo deny
+        run: cargo deny check
+
+      - name: Run Clippy
+        run: cargo clippy --all-features -- -D warnings
+
+      - name: Build
+        run: cargo build --verbose
+      - name: Run tests
+        run: cargo test --verbose
+      - name: cargo test no default features
+        run: cargo test --no-default-features --verbose  
+      - name: cargo test chars features but no default features
+        run: cargo test --no-default-features --features chars      
+      - name: cargo test chars features
+        run: cargo test --features chars
+
+      - name: Show sccache statistics
+        run: sccache --show-stats
+
+  windows:
+    name: Windows Build & Test
+    needs: ubuntu
+    runs-on: windows-2025
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install sccache
+        uses: mozilla-actions/sccache-action@v0.0.9
+      - name: Build
+        run: cargo build --verbose
+      - name: Run tests
+        run: cargo test --verbose
+      - name: cargo test no default features
+        run: cargo test --no-default-features --verbose  
+      - name: cargo test chars features but no default features
+        run: cargo test --no-default-features --features chars      
+      - name: cargo test chars features
+        run: cargo test --features chars
+
+      - name: Show sccache statistics
+        run: sccache --show-stats
