@@ -42,11 +42,11 @@ impl<const N: usize> RandomChars<N> {
     }
 
     pub fn generate_chars(safe_display: bool) -> Result<Zeroizing<[char; N]>, getrandom::Error> {
-        let mut seed = [0u8; 32];
+        let mut seed = Zeroizing::new([0u8; 32]);
         getrandom::fill(seed.as_mut())?;
 
         let mut buffer = Zeroizing::new(['\0'; N]);
-        let rng = ChaCha20Rng::from_seed(seed);
+        let rng = ChaCha20Rng::from_seed(*seed);
 
         Self::fill_with_chars(&mut buffer, rng, safe_display);
 
@@ -56,11 +56,11 @@ impl<const N: usize> RandomChars<N> {
     pub fn generate_chars_with_chacha12(
         safe_display: bool,
     ) -> Result<Zeroizing<[char; N]>, getrandom::Error> {
-        let mut seed = [0u8; 32];
+        let mut seed = Zeroizing::new([0u8; 32]);
         getrandom::fill(seed.as_mut())?;
 
         let mut buffer = Zeroizing::new(['\0'; N]);
-        let rng = ChaCha12Rng::from_seed(seed);
+        let rng = ChaCha12Rng::from_seed(*seed);
 
         Self::fill_with_chars(&mut buffer, rng, safe_display);
 
