@@ -65,7 +65,7 @@ pub fn test_chars() {
 
 ## License
 
-Apache-2.0
+Apache-2.0 OR MIT
 
 ## Caution
 
